@@ -210,6 +210,8 @@ module ee2026_top(
             ST_TASK_A: begin
                 // Show LEDs from LD(8) to LD(RB)=LD(2)
                 // LD(EX)=LD(7) only ON when SW7 is ON
+                led[10] = 1'b1;
+                led[9] = 1'b1;
                 led[8] = 1'b1;
                 led[7] = sw[7];     // LED7 controlled by SW7
                 led[6] = 1'b1;
