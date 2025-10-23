@@ -33,11 +33,11 @@ module ee2026_top(
     localparam EX = 7;              // EX position - SW7 controls it (from Table 2)
     
     // Timing parameters (in 10ms units)
-    localparam T_HIGHER = 160;      // 1.60s when moving to higher LED (from Table 6)
+    localparam T_HIGHER = 100;      // 1.00s when moving to higher LED (from Table 6)
     localparam T_LOWER = 50;        // 0.50s when moving to lower LED (from Table 6)
     
     // Blinking frequencies (from Table 7)
-    localparam LEFT_BLINK_FREQ = 5;     // 5 Hz for left region
+    localparam LEFT_BLINK_FREQ = 7;     // 7 Hz for left region
     localparam RIGHT_BLINK_FREQ = 15;   // 15 Hz for right region
     
     // Direction and button (from Tables 4 & 5)
@@ -50,7 +50,7 @@ module ee2026_top(
     
     // Frequency dividers
     wire clk_10ms;          // 100 Hz for movement timing
-    wire clk_5hz;           // 5 Hz for left region blinking
+    wire clk_7hz;           // 5 Hz for left region blinking
     wire clk_15hz;          // 15 Hz for right region blinking
     wire clk_refresh;       // 1 kHz for 7-segment refresh
     
@@ -60,9 +60,9 @@ module ee2026_top(
         .slow_clk(clk_10ms)
     );
     
-    freq_divider #(.TARGET_FREQ(5), .COUNTER_WIDTH(24)) div_5hz (
+    freq_divider #(.TARGET_FREQ(7), .COUNTER_WIDTH(23)) div_7hz (
         .clk(clk),
-        .slow_clk(clk_5hz)
+        .slow_clk(clk_7hz)
     );
     
     freq_divider #(.TARGET_FREQ(15), .COUNTER_WIDTH(23)) div_15hz (
@@ -225,7 +225,7 @@ module ee2026_top(
                 // Show moving EX with blinking in edge regions
                 if (ex_position >= (LB + 1)) begin
                     // Left region: LD15 to LD11 - blink at 5Hz
-                    led[ex_position] = clk_5hz;
+                    led[ex_position] = clk_7hz;
                 end 
                 else if (ex_position <= (RB - 1)) begin
                     // Right region: LD1 to LD0 - blink at 15Hz
