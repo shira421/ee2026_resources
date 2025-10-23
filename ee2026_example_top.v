@@ -118,11 +118,13 @@ module ee2026_top(
     reg ex_direction;               // 0=moving down, 1=moving up
     reg [7:0] move_counter;         // Counter for movement timing
     reg [7:0] move_target;          // Target count before next move
+    reg [1:0] prev_state;           // Previous state for transition detection
     
     initial begin
         ex_position = 0;
         ex_direction = 0;
         move_counter = 0;
+        prev_state = ST_TASK_A;
     end
     
     // State machine transitions
@@ -132,9 +134,6 @@ module ee2026_top(
                 if (btnU_pressed && !btnC_sync) begin
                     // Only btnU pressed - start TASK B
                     state <= ST_TASK_B;
-                    ex_position <= EX;              // Start at EX position
-                    ex_direction <= DIR_INITIAL;    // Start moving down
-                    move_counter <= 0;
                 end
             end
             
@@ -164,7 +163,18 @@ module ee2026_top(
     
     // EX movement logic (10ms tick)
     always @(posedge clk_10ms) begin
-        if (state == ST_TASK_B || state == ST_TASK_C) begin
+        // Update previous state
+        prev_state <= state;
+        
+        // Detect transition into TASK_B (from TASK_A)
+        if (state == ST_TASK_B && prev_state == ST_TASK_A) begin
+            // Initialize movement parameters
+            ex_position <= EX;              // Start at EX position (7)
+            ex_direction <= DIR_INITIAL;    // Start moving down (0)
+            move_counter <= 0;
+        end
+        // Normal movement logic
+        else if (state == ST_TASK_B || state == ST_TASK_C) begin
             if (move_counter >= move_target - 1) begin
                 // Time to move
                 move_counter <= 0;
