@@ -44,10 +44,6 @@ module ee2026_top(
     localparam DIR_INITIAL = 1'b0;  // 0 = moves to lower LED initially
     // PB_INITIAL = btnU (Up button)
     
-    // Anodes for SUBTASK A (from Table 3)
-    // AN3, AN2, AN0 are ON (active-low: 0=ON, 1=OFF)
-    localparam [3:0] ANODE_TASK_A = 4'b0010;  // AN[3]=0, AN[2]=0, AN[1]=1, AN[0]=0
-    
     //=========================================================================
     // INTERNAL SIGNALS
     //=========================================================================
@@ -273,7 +269,7 @@ module ee2026_top(
                 // SUBTASK A: Display EX value when SW7 is ON
                 if (sw[7]) begin
                     digit_to_display = EX;              // Show "7"
-                    an = ANODE_TASK_A;                  // AN0, AN2, AN3 active
+                    an = 4'b0010;                  // AN0, AN2, AN3 active
                 end else begin
                     digit_to_display = 4'hF;            // Blank
                     an = 4'b1111;                       // All OFF
@@ -293,24 +289,12 @@ module ee2026_top(
                 if (ex_position >= (LB + 1) || ex_position <= (RB - 1)) begin
                     // Edge regions (LD15-LD11 or LD1-LD0): Show "E." alternating
                     digit_to_display = 4'hE;  // Show "E"
-                    
-                    if (anode_counter[1] == 0) begin
-                        an = 4'b1110;  // AN0 active (right side)
-                    end else begin
-                        an = 4'b0111;  // AN3 active (left side)
-                    end
-                    
+                    an = 4'b0110;
                     seg = seg_pattern;
                 end else begin
                     // Middle region (LD10-LD2): Show "- -" alternating
-                    digit_to_display = 4'hA;  // Dash
-                    
-                    if (anode_counter[1] == 0) begin
-                        an = 4'b1100;  // AN0, AN1 active (right side)
-                    end else begin
-                        an = 4'b0011;  // AN2, AN3 active (left side)
-                    end
-                    
+                    digit_to_display = 4'hC;  // Dash
+                    an = 4'b1001;
                     seg = seg_pattern;
                 end
             end
