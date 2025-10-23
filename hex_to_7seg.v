@@ -35,12 +35,12 @@ module hex_to_7seg(
             4'h7: seg = 7'b1111000;  // Display "7"
             4'h8: seg = 7'b0000000;  // Display "8"
             4'h9: seg = 7'b0010000;  // Display "9"
-            4'hA: seg = 7'b0111111;  // Display "-" (dash/minus for ending mode)
+            4'hA: seg = 7'b0001000;  // Display "A"
             4'hB: seg = 7'b0000011;  // Display "b"
-            4'hC: seg = 7'b1000110;  // Display "C"
+            4'hC: seg = 7'b0100111;  // Display "c"
             4'hD: seg = 7'b0100001;  // Display "d"
             4'hE: seg = 7'b0000110;  // Display "E"
-            4'hF: seg = 7'b1111111;  // Blank (all segments OFF)
+            4'hF: seg = 7'b0001110;  // Blank (all segments OFF)
             default: seg = 7'b1111111;
         endcase
     end
